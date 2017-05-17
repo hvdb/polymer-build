@@ -93,10 +93,14 @@ export class PolymerProject {
     return dependenciesStream;
   }
 
-  addPushManifest(filePath?: string, prefix?: string): NodeJS.ReadWriteStream {
+  /**
+   * Returns a stream transformer that creates a push manifest for this
+   * project.
+   */
+  addPushManifest(outPath?: string, basePath?: string): NodeJS.ReadWriteStream {
     // TODO(rictic): remove casts after this lands:
     // https://github.com/DefinitelyTyped/DefinitelyTyped/pull/16499
-    return new AddPushManifest(this.config, filePath, prefix) as any;
+    return new AddPushManifest(this.config, outPath, basePath) as any;
   }
 
   /**
