@@ -255,14 +255,16 @@ export abstract class AsyncTransformStream<In extends{}, Out extends{}> extends
  * for the file at each location.
  */
 export class VinylReaderTransform extends AsyncTransformStream<string, File> {
-  constructor() {
-    super({objectMode: true});
+  private _cwd: string;
+  constructor(cwd: string) {
+    super({ objectMode: true });
+    this._cwd =  cwd
   }
 
   protected async *
       _transformIter(paths: AsyncIterable<string>): AsyncIterable<File> {
     for await (const filePath of paths) {
-      yield new File({path: filePath, contents: await fs.readFile(filePath)});
+      yield new File({cwd: this._cwd, path: filePath, contents: await fs.readFile(filePath)});
     }
   }
 }

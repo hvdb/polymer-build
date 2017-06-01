@@ -105,6 +105,7 @@ export class BuildAnalyzer {
   analyzer: Analyzer;
   started: boolean = false;
   sourceFilesLoaded: boolean = false;
+  cwd: string;
 
   private _sourcesStream: NodeJS.ReadableStream;
   private _sourcesProcessingStream: NodeJS.ReadWriteStream;
@@ -126,6 +127,8 @@ export class BuildAnalyzer {
 
   constructor(config: ProjectConfig) {
     this.config = config;
+
+    this.cwd = this.config.root || process.cwd();
 
     this.loader = new StreamLoader(this);
     this.analyzer = new Analyzer({
@@ -153,6 +156,7 @@ export class BuildAnalyzer {
     // Create the base streams for sources & dependencies to be read from.
     this._dependenciesStream = new PassThrough({objectMode: true});
     this._sourcesStream = vinylSrc(this.config.sources, {
+      cwd: this.cwd,
       cwdbase: true,
       nodir: true,
     });
@@ -184,7 +188,7 @@ export class BuildAnalyzer {
             .on('error',
                 (err: Error) =>
                     this._dependenciesProcessingStream.emit('error', err))
-            .pipe(new VinylReaderTransform())
+            .pipe(new VinylReaderTransform(this.cwd))
             .on('error',
                 (err: Error) =>
                     this._dependenciesProcessingStream.emit('error', err))
