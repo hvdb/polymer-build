@@ -85,6 +85,7 @@ export class PolymerProject {
     // combine.
     if (this.config.extraDependencies.length > 0) {
       const includeStream = vinylSrc(this.config.extraDependencies, {
+        cwd: this.config.root,
         cwdbase: true,
         nodir: true,
         passthrough: true,
