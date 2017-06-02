@@ -108,6 +108,7 @@ export class BuildBundler extends AsyncTransformStream<File, File> {
     // Map the bundles into the file map.
     for (const [filename, document] of documents) {
       this._mapFile(new File({
+        cwd: this.config.root,
         path: pathFromUrl(this.config.root, filename),
         contents: new Buffer(parse5.serialize(document.ast)),
       }));
